@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user-java
+  name: trips
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: user-java
+      app: trips
   template:
     metadata:
       labels:
-        app: user-java
+        app: trips
     spec:
       containers:
-      - name: user-java
-        image: registryhkl1754.azurecr.io/tripinsights/user-java:1.0
+      - name: trips
+        image: registryhkl1754.azurecr.io/tripinsights/trips:1.0
         ports:
         - containerPort: 80
         env:
@@ -32,18 +32,18 @@ spec:
           value: sqlserverhkl1754.database.windows.net
         - name: SQL_DBNAME
           value: mydrivingDB
-        - name: ASPNETCORE_ENVIRONMENT
-          value: Production
+        - name: CREDENTIAL_METHOD
+          value: username_and_password
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: user-java-service
+  name: trips-service
 spec:
   type: ClusterIP
   ports:
   - port: 80 
     targetPort: 80
-    name: http-user-java-port
+    name: http-trips-port
   selector:
-    app: user-java
+    app: trips

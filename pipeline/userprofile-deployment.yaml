@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user-java
+  name: userprofile
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: user-java
+      app: userprofile
   template:
     metadata:
       labels:
-        app: user-java
+        app: userprofile
     spec:
       containers:
-      - name: user-java
-        image: registryhkl1754.azurecr.io/tripinsights/user-java:1.0
+      - name: userprofile
+        image: registryhkl1754.azurecr.io/tripinsights/userprofile:1.0
         ports:
         - containerPort: 80
         env:
@@ -32,18 +32,16 @@ spec:
           value: sqlserverhkl1754.database.windows.net
         - name: SQL_DBNAME
           value: mydrivingDB
-        - name: ASPNETCORE_ENVIRONMENT
-          value: Production
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: user-java-service
+  name: userprofile-service
 spec:
   type: ClusterIP
   ports:
   - port: 80 
     targetPort: 80
-    name: http-user-java-port
+    name: http-userprofile-port
   selector:
-    app: user-java
+    app: userprofile
