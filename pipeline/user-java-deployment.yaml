@@ -44,4 +44,4 @@ spec:
     targetPort: 80
     name: http-user-java-port
   selector:
-    app: poi
+    app: user-java
