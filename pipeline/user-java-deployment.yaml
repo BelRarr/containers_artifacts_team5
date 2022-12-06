@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-java
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-java
+  template:
+    metadata:
+      labels:
+        app: user-java
+    spec:
+      containers:
+      - name: user-java
+        image: registryhkl1754.azurecr.io/tripinsights/user-java:1.0
+        ports:
+        - containerPort: 80
+        env:
+        - name: SQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: db-user-pass
+              key: username
+        - name: SQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-user-pass
+              key: password
+        - name: SQL_SERVER
+          value: sqlserverhkl1754.database.windows.net
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Production
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-java-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80 
+    targetPort: 80
+    name: http-user-java-port
+  selector:
+    app: poi
