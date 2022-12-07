@@ -2,8 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: trips
+  namespace: api
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: trips
@@ -17,21 +18,10 @@ spec:
         image: registryhkl1754.azurecr.io/tripinsights/trips:1.0
         ports:
         - containerPort: 80
+        envFrom:
+        - secretRef:
+            name: openhack-sql-secrets
         env:
-        - name: SQL_USER
-          valueFrom:
-            secretKeyRef:
-              name: db-user-pass
-              key: username
-        - name: SQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: db-user-pass
-              key: password
-        - name: SQL_SERVER
-          value: sqlserverhkl1754.database.windows.net
-        - name: SQL_DBNAME
-          value: mydrivingDB
         - name: CREDENTIAL_METHOD
           value: username_and_password
 ---
@@ -39,6 +29,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: trips-service
+  namespace: api
 spec:
   type: ClusterIP
   ports:
