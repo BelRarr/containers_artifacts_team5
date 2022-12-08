@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trips
+  namespace: api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: trips
+  template:
+    metadata:
+      labels:
+        app: trips
+    spec:
+      containers:
+      - name: trips
+        image: registryhkl1754.azurecr.io/tripinsights/trips:1.0
+        ports:
+        - containerPort: 80
+        envFrom:
+        - secretRef:
+            name: openhack-sql-secrets
+        env:
+        - name: CREDENTIAL_METHOD
+          value: username_and_password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trips-service
+  namespace: api
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80 
+    targetPort: 80
+    name: http-trips-port
+  selector:
+    app: trips
